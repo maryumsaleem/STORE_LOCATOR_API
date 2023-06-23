@@ -8,7 +8,7 @@ const filterMiddleware = async (req, res, next) => {
   
       // Advance Filtering
       let queryStr = JSON.stringify(queryObj);
-      // queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+      queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
       console.log(JSON.parse(queryStr));
   
       let query = Store.find(JSON.parse(queryStr));

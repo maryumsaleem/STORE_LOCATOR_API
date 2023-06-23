@@ -5,6 +5,7 @@ const app = express();
 const dotenv = require("dotenv");
 const routes = require('./routes/stores'); 
 const cors = require("cors"); 
+const expressSanitize = require('express-mongo-sanitize');
 
 
 
@@ -14,6 +15,14 @@ dotenv.config({ path: "./config/config.env" });
 /************** Middlewares ****************/
 app.use(express.json({limit: '10kb'}));
 app.use(express.urlencoded({ extended: true })); 
+app.use(expressSanitize());
+
+let corsOptions = {
+  origin: '*',
+  "methods": "GET,HEAD,PUT,PATCH,POST,DELETE",
+  optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
+}
+app.use(cors(corsOptions));
 
 
 
