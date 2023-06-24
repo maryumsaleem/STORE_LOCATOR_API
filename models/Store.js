@@ -22,7 +22,7 @@ const StoreSchema = new mongoose.Schema({
       //2dsphere supports queries that calculate geometries on an earth like sphere
       index: "2dsphere",
     },
-    formattedAddress: String,
+    formattedAddress: String
   },
   createdAt: {
     type: Date,
@@ -31,25 +31,17 @@ const StoreSchema = new mongoose.Schema({
 });
 
 //Geocode & create location
-StoreSchema.pre('save', async function (next) {
-  if (!this.isModified('address')) {
-    // If the 'address' field is not modified, skip the geocoding process
-    return next();
-  }
+StoreSchema.pre('save', async function(next) {
+  const loc = await geocoder.geocode(this.address);
+  this.location = {
+    type: 'Point',
+    coordinates: [loc[0].longitude, loc[0].latitude],
+    formattedAddress: loc[0].formattedAddress
+  };
 
-  try {
-    const loc = await geocoder.geocode(this.address);
-    this.location = {
-      type: 'Point',
-      coordinates: [loc[0].longitude, loc[0].latitude],
-      formattedAddress: loc[0].formattedAddress
-    };
-
-    next();
-  } catch (error) {
-    next(error);
-  }
+  // Do not save address
+  this.address = undefined;
+  next();
 });
-
 
 module.exports = mongoose.model("Store", StoreSchema);

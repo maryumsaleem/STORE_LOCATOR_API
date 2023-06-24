@@ -7,8 +7,6 @@ const routes = require('./routes/stores');
 const cors = require("cors"); 
 const expressSanitize = require('express-mongo-sanitize');
 
-
-
 //load env vars
 dotenv.config({ path: "./config/config.env" });
 
@@ -28,6 +26,7 @@ app.use(cors(corsOptions));
 
 /************** Routes ****************/
 app.use('/' ,routes); /*** Application Route ***/ 
+
 // Handle invalid routes
 app.all('*', (req, res, next) => {
     res.status(404).send({ message: 'Invalid Route' });
